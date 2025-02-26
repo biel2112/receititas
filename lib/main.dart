@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:receititas/pages/listar-receitas.dart';
+import 'package:receititas/pages/listar_receitas.dart';
 
 void main() {
   runApp(const ReceititasApp());
 }
 
 class ReceititasApp extends StatelessWidget {
-  const ReceititasApp({Key? key}) : super(key: key);
+  const ReceititasApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ReceititasApp extends StatelessWidget {
 }
 
 class PaginaInicial extends StatelessWidget {
-  const PaginaInicial({Key? key}) : super(key: key);
+  const PaginaInicial({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +43,14 @@ class PaginaInicial extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ListaReceitasScreen()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ListaReceitasScreen()));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.brown[700],
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               ),
               child: const Text(
                 'Abrir',

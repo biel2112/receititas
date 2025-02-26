@@ -4,7 +4,7 @@ import 'package:receititas/models/receita.dart';
 class DetalhesReceitaScreen extends StatelessWidget {
   final Receita receita;
 
-  DetalhesReceitaScreen({required this.receita});
+  const DetalhesReceitaScreen({super.key, required this.receita});
 
   @override
   Widget build(BuildContext context) {
@@ -43,29 +43,26 @@ class DetalhesReceitaScreen extends StatelessWidget {
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               ),
-              ...receita.ingredientes
-                  .map((ing) => Align(
+              ...receita.ingredientes.map((ing) => Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                            '- ${ing.quantidade} ${ing.medida} de ${ing.nome}',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontFamily: 'DancingScript', // Fonte de letra de mão
-                            ),
-                          ),
+                        '- ${ing.quantidade} ${ing.medida} de ${ing.nome}',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'DancingScript', // Fonte de letra de mão
+                        ),
+                      ),
                     ),
-                  ))
-                  .toList(),
+                  )),
               SizedBox(height: 20),
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 255, 128, 0),
-                    borderRadius:
-                        BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(8.0),
                     boxShadow: [
                       BoxShadow(
                         // ignore: deprecated_member_use

@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
 class DataHelper {
@@ -30,7 +31,8 @@ class DataHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
         ingredientes TEXT NOT NULL,
-        modo_preparo TEXT NOT NULL
+        tipoReceita TEXT NOT NULL,
+        modoDePreparo TEXT NOT NULL
       )
     ''');
 

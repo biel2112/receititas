@@ -3,7 +3,6 @@ import 'package:receititas/db/receita_dao.dart';
 
 import '../models/receita.dart';
 
-
 class ReceitaService {
   final ReceitaDao _receitaDao = ReceitaDao();
   final IngredienteDao _ingredienteDao = IngredienteDao();
@@ -20,7 +19,8 @@ class ReceitaService {
   Future<List<Receita>> listarReceitas() async {
     List<Receita> receitas = await _receitaDao.listarReceitas();
     for (var receita in receitas) {
-      receita.ingredientes = await _ingredienteDao.listarIngredientes(receita.id!);
+      receita.ingredientes =
+          await _ingredienteDao.listarIngredientes(receita.id!);
     }
     return receitas;
   }
@@ -37,5 +37,18 @@ class ReceitaService {
       ingrediente.receitaId = receita.id!;
       await _ingredienteDao.editarIngrediente(ingrediente);
     }
+  }
+
+  Future<List<Receita>> listarReceitasPorTipo(String tipo) async {
+    // Obtém as receitas filtradas por tipo
+    List<Receita> receitas = await _receitaDao.listarReceitasPorTipo(tipo);
+
+    // Para cada receita filtrada, busca seus ingredientes
+    for (var receita in receitas) {
+      receita.ingredientes =
+          await _ingredienteDao.listarIngredientes(receita.id!);
+    }
+
+    return receitas;
   }
 }

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:receititas/services/receita-service.dart';
+import 'package:receititas/services/receita_service.dart';
 import '../models/receita.dart';
 import 'package:receititas/models/ingrediente.dart';
 
 class EditarReceitaScreen extends StatefulWidget {
   final Receita receita;
 
-  EditarReceitaScreen({required this.receita});
+  const EditarReceitaScreen({super.key, required this.receita});
 
   @override
+  // ignore: library_private_types_in_public_api
   _EditarReceitaScreenState createState() => _EditarReceitaScreenState();
 }
 
@@ -22,7 +23,8 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
   void initState() {
     super.initState();
     _receita = widget.receita;
-    _ingredientes = List.from(_receita.ingredientes); // Carrega os ingredientes da receita
+    _ingredientes =
+        List.from(_receita.ingredientes); // Carrega os ingredientes da receita
   }
 
   void _adicionarIngrediente() {
@@ -49,11 +51,13 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
       await _receitaService.editarReceita(_receita);
 
       // Exibe a mensagem de sucesso
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Receita editada com sucesso!')),
       );
 
       // Retorna para a tela anterior
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, _receita);
     }
   }
@@ -107,6 +111,7 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
                         BorderRadius.circular(8.0), // Bordas arredondadas
                     boxShadow: [
                       BoxShadow(
+                        // ignore: deprecated_member_use
                         color: Colors.black.withOpacity(0.1),
                         spreadRadius: 1,
                         blurRadius: 5,
@@ -115,8 +120,8 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
                     ],
                   ),
                   child: Text('Ingredientes',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
                 SizedBox(height: 10),
                 Column(
@@ -131,8 +136,8 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
                                 initialValue: _ingredientes[index].nome,
                                 decoration: _inputDecoration('Ingrediente'),
                                 onChanged: (value) {
-                                  _ingredientes[index] =
-                                      _ingredientes[index].copyWith(nome: value);
+                                  _ingredientes[index] = _ingredientes[index]
+                                      .copyWith(nome: value);
                                 },
                                 validator: (value) =>
                                     value!.isEmpty ? 'Campo obrigatório' : null,
@@ -158,8 +163,8 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
                                 initialValue: _ingredientes[index].medida,
                                 decoration: _inputDecoration('Medida'),
                                 onChanged: (value) {
-                                  _ingredientes[index] =
-                                      _ingredientes[index].copyWith(medida: value);
+                                  _ingredientes[index] = _ingredientes[index]
+                                      .copyWith(medida: value);
                                 },
                                 validator: (value) =>
                                     value!.isEmpty ? 'Campo obrigatório' : null,
@@ -167,7 +172,8 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
                             ),
                             if (index > 0)
                               IconButton(
-                                icon: Icon(Icons.remove_circle, color: Colors.red),
+                                icon: Icon(Icons.remove_circle,
+                                    color: Colors.red),
                                 onPressed: () => _removerIngrediente(index),
                               ),
                           ],
@@ -181,9 +187,9 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
                   child: FloatingActionButton(
                     onPressed: _adicionarIngrediente,
                     backgroundColor: const Color.fromARGB(255, 255, 128, 0),
-                    child: Icon(Icons.add),
                     mini: true,
                     tooltip: 'Adicionar Ingrediente',
+                    child: Icon(Icons.add),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -196,6 +202,7 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
                         BorderRadius.circular(8.0), // Bordas arredondadas
                     boxShadow: [
                       BoxShadow(
+                        // ignore: deprecated_member_use
                         color: Colors.black.withOpacity(0.1),
                         spreadRadius: 1,
                         blurRadius: 5,
@@ -204,8 +211,8 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
                     ],
                   ),
                   child: Text('Modo de Preparo',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
                 SizedBox(height: 10),
                 TextFormField(
@@ -223,12 +230,13 @@ class _EditarReceitaScreenState extends State<EditarReceitaScreen> {
                 Center(
                   child: ElevatedButton(
                     onPressed: _salvarReceita,
-                    child: Text('Salvar Receita'),
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       textStyle: TextStyle(fontSize: 16),
                       backgroundColor: Color.fromARGB(255, 255, 128, 0),
                     ),
+                    child: Text('Salvar Receita'),
                   ),
                 ),
               ],

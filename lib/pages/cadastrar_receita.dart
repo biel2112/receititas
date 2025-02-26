@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:receititas/models/ingrediente.dart';
 import 'package:receititas/models/receita.dart';
-import 'package:receititas/services/receita-service.dart';
+import 'package:receititas/services/receita_service.dart';
 
 class CadastroReceitaScreen extends StatefulWidget {
-  
+  const CadastroReceitaScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _CadastroReceitaScreenState createState() => _CadastroReceitaScreenState();
 }
 
@@ -14,9 +16,12 @@ class _CadastroReceitaScreenState extends State<CadastroReceitaScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _modoPreparoController = TextEditingController();
-  List<Ingrediente> _ingredientes = [
+  final List<Ingrediente> _ingredientes = [
     Ingrediente(id: null, nome: '', quantidade: '', medida: '', receitaId: null)
   ];
+
+  // Variável para armazenar o tipo da receita
+  TipoReceita? _tipoReceita;
 
   void _adicionarIngrediente() {
     setState(() {
@@ -32,18 +37,26 @@ class _CadastroReceitaScreenState extends State<CadastroReceitaScreen> {
   }
 
   void _salvarReceita() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && _tipoReceita != null) {
       Receita novaReceita = Receita(
         id: null,
+        tipoReceita: _tipoReceita!, // Passa o tipo da receita escolhido
         nome: _nomeController.text,
         ingredientes: _ingredientes,
         modoDePreparo: _modoPreparoController.text,
       );
       await _receitaService.adicionarReceita(novaReceita);
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Receita salva com sucesso!')),
       );
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
+    } else {
+      // Mensagem para o caso do tipo de receita não ser selecionado
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Por favor, selecione o tipo de receita.')),
+      );
     }
   }
 
@@ -79,6 +92,7 @@ class _CadastroReceitaScreenState extends State<CadastroReceitaScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Campo para o nome da receita
                 TextFormField(
                   controller: _nomeController,
                   decoration: _inputDecoration('Nome da Receita'),
@@ -86,22 +100,44 @@ class _CadastroReceitaScreenState extends State<CadastroReceitaScreen> {
                       value!.isEmpty ? 'Campo obrigatório' : null,
                 ),
                 SizedBox(height: 20),
+                // Campo para selecionar o tipo de receita
+                DropdownButtonFormField<TipoReceita>(
+                  decoration: _inputDecoration('Tipo de Receita'),
+                  value: _tipoReceita,
+                  onChanged: (TipoReceita? newValue) {
+                    setState(() {
+                      _tipoReceita = newValue;
+                    });
+                  },
+                  items: TipoReceita.values.map<DropdownMenuItem<TipoReceita>>(
+                    (TipoReceita value) {
+                      return DropdownMenuItem<TipoReceita>(
+                        value: value,
+                        child: Text(tipoReceitaToString(value)),
+                      );
+                    },
+                  ).toList(),
+                  validator: (value) =>
+                      value == null ? 'Campo obrigatório' : null,
+                ),
+                SizedBox(height: 20),
+                // Campo para ingredientes
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 255, 128, 0),
-                    borderRadius:
-                        BorderRadius.circular(8.0), // Bordas arredondadas
+                    borderRadius: BorderRadius.circular(8.0),
                     boxShadow: [
                       BoxShadow(
                         // ignore: deprecated_member_use
                         color: Colors.black.withOpacity(0.1),
                         spreadRadius: 1,
                         blurRadius: 5,
-                        offset: Offset(0, 3), // Sombra suave
+                        offset: Offset(0, 3),
                       ),
-                    ]),
+                    ],
+                  ),
                   child: Text('Ingredientes',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -163,28 +199,29 @@ class _CadastroReceitaScreenState extends State<CadastroReceitaScreen> {
                   child: FloatingActionButton(
                     onPressed: _adicionarIngrediente,
                     backgroundColor: const Color.fromARGB(255, 255, 128, 0),
-                    child: Icon(Icons.add),
                     mini: true,
                     tooltip: 'Adicionar Ingrediente',
+                    child: Icon(Icons.add),
                   ),
                 ),
                 SizedBox(height: 20),
+                // Campo para modo de preparo
                 Container(
                   padding: EdgeInsets.all(8.0),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 255, 128, 0),
-                    borderRadius:
-                        BorderRadius.circular(8.0), // Bordas arredondadas
+                    borderRadius: BorderRadius.circular(8.0),
                     boxShadow: [
                       BoxShadow(
                         // ignore: deprecated_member_use
                         color: Colors.black.withOpacity(0.1),
                         spreadRadius: 1,
                         blurRadius: 5,
-                        offset: Offset(0, 3), // Sombra suave
+                        offset: Offset(0, 3),
                       ),
-                    ]),
+                    ],
+                  ),
                   child: Text('Modo de Preparo',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -204,14 +241,12 @@ class _CadastroReceitaScreenState extends State<CadastroReceitaScreen> {
                 Center(
                   child: ElevatedButton(
                     onPressed: _salvarReceita,
-                    child: Text('Salvar Receita', style: TextStyle(color: 
-                  const Color.fromARGB(255, 255, 128, 0),
-                    ),),
                     style: ElevatedButton.styleFrom(
                       padding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       textStyle: TextStyle(fontSize: 16),
                     ),
+                    child: Text('Salvar Receita'),
                   ),
                 ),
               ],

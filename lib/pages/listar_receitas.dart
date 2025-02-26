@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:receititas/pages/cadastrar-receita.dart';
-import 'package:receititas/pages/detalhes-receitas.dart';
-import 'package:receititas/pages/editar-receita.dart';
-import 'package:receititas/services/receita-service.dart';
+import 'package:receititas/pages/cadastrar_receita.dart';
+import 'package:receititas/pages/detalhes_receitas.dart';
+import 'package:receititas/pages/editar_receita.dart';
+import 'package:receititas/pages/tela_tipos_receitas.dart'; // Importe a tela de tipos de receita
+import 'package:receititas/services/receita_service.dart';
 import '../models/receita.dart';
 
 class ListaReceitasScreen extends StatefulWidget {
+  const ListaReceitasScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _ListaReceitasScreenState createState() => _ListaReceitasScreenState();
 }
 
@@ -48,23 +52,18 @@ class _ListaReceitasScreenState extends State<ListaReceitasScreen> {
 
   void _editarReceita(int index) async {
     // Navega para a tela de edição, passando a receita a ser editada
-    Receita receitaEditada = await Navigator.push(
+    Receita? receitaEditada = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditarReceitaScreen(receita: _receitas[index]),
       ),
     );
 
+    // Verifica se a receitaEditada não é null antes de atualizar a lista
     if (receitaEditada != null) {
-      // Atualiza a lista de receitas com a edição
       setState(() {
         _receitas[index] = receitaEditada;
       });
-
-      // Exibe uma mensagem de sucesso
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Receita editada com sucesso!')),
-      );
     }
   }
 
@@ -79,6 +78,7 @@ class _ListaReceitasScreenState extends State<ListaReceitasScreen> {
     });
 
     // Exibe uma mensagem de sucesso
+    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Receita excluída com sucesso!')),
     );
@@ -88,7 +88,8 @@ class _ListaReceitasScreenState extends State<ListaReceitasScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Receitas', style: TextStyle(fontFamily: 'DancingScript', fontSize: 30)),
+        title: Text('Receitas',
+            style: TextStyle(fontFamily: 'DancingScript', fontSize: 30)),
         backgroundColor: const Color.fromARGB(255, 255, 128, 0),
       ),
       body: _isLoading
@@ -101,7 +102,8 @@ class _ListaReceitasScreenState extends State<ListaReceitasScreen> {
                 itemBuilder: (context, index) {
                   return Dismissible(
                     key: Key(_receitas[index].id.toString()),
-                    direction: DismissDirection.endToStart, // Define a direção para deslizar
+                    direction: DismissDirection
+                        .endToStart, // Define a direção para deslizar
                     onDismissed: (direction) {
                       _excluirReceita(index); // Exclui a receita
                     },
@@ -115,9 +117,11 @@ class _ListaReceitasScreenState extends State<ListaReceitasScreen> {
                       margin: EdgeInsets.symmetric(vertical: 8.0),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.0), // Bordas arredondadas
+                        borderRadius:
+                            BorderRadius.circular(12.0), // Bordas arredondadas
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.black.withOpacity(0.1),
                             spreadRadius: 2,
                             blurRadius: 5,
@@ -141,8 +145,10 @@ class _ListaReceitasScreenState extends State<ListaReceitasScreen> {
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                         trailing: IconButton(
-                          icon: Icon(Icons.edit, color: Color.fromARGB(255, 255, 128, 0)),
-                          onPressed: () => _editarReceita(index), // Abre o formulário de edição
+                          icon: Icon(Icons.edit,
+                              color: Color.fromARGB(255, 255, 128, 0)),
+                          onPressed: () => _editarReceita(
+                              index), // Abre o formulário de edição
                         ),
                         onTap: () {
                           Navigator.push(
@@ -159,11 +165,39 @@ class _ListaReceitasScreenState extends State<ListaReceitasScreen> {
                 },
               ),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _abrirCadastroReceita,
-        backgroundColor: const Color.fromARGB(255, 255, 128, 0),
-        child: Icon(Icons.add, color: Colors.white),
-        tooltip: 'Adicionar Receita',
+      floatingActionButton: Stack(
+        children: [
+          // Botão de tipos de receitas posicionado no canto inferior esquerdo
+          Positioned(
+            bottom: 16,
+            left: 50,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        TelaTiposReceitas(), // Tela de tipos de receitas
+                  ),
+                );
+              },
+              backgroundColor: Colors.blue, // Cor do botão de categoria
+              child: Icon(Icons.category,
+                  color: Colors.white), // Ícone de categoria
+            ),
+          ),
+          // Botão de adicionar receita posicionado no canto inferior direito
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: FloatingActionButton(
+              onPressed: _abrirCadastroReceita,
+              backgroundColor: const Color.fromARGB(255, 255, 128, 0),
+              tooltip: 'Adicionar Receita',
+              child: Icon(Icons.add, color: Colors.white),
+            ),
+          ),
+        ],
       ),
     );
   }
